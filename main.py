@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 
+#hola aux :)
 class Menu:
     def __init__(self, root):
         root.title("Menu Principal")
