@@ -28,10 +28,10 @@ class ListaDoble():
         if self.nodoInicio is None:
             return
         actual = self.nodoInicio
-        print("Nombre Dron",actual.dato.nombre)
+        print("Nombre_Dron",actual.dato.nombre)
         while actual.siguiente:
             actual = actual.siguiente
-            print("Nombre Dron",actual.dato.nombre)
+            print("Nombre_Dron",actual.dato.nombre)
 
     def buscar(self, dato):
         actual = self.nodoInicio
