@@ -1,12 +1,15 @@
+import tkinter
 import tkinter as tk
 import tkinter.font as tkFont
+from LecturaXML import *
 
-#hola aux :)
+lecture = None
+
 class Menu:
     def __init__(self, root):
         root.title("Menu Principal")
-        width=600
-        height=500
+        width=820
+        height=700
         screenwidth = root.winfo_screenwidth()
         screenheight = root.winfo_screenheight()
         alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
@@ -20,7 +23,8 @@ class Menu:
         btnInicializar["fg"] = "#000000"
         btnInicializar["justify"] = "center"
         btnInicializar["text"] = "Inicializar Sistema"
-        btnInicializar.place(x=190,y=90,width=216,height=30)
+        btnInicializar["border"] = "1px"
+        btnInicializar.place(x=5,y=5,width=150,height=20)
         btnInicializar["command"] = self.btnInicializar
 
         btnCarga=tk.Button(root)
@@ -30,7 +34,7 @@ class Menu:
         btnCarga["fg"] = "#000000"
         btnCarga["justify"] = "center"
         btnCarga["text"] = "Cargar Archivo XML"
-        btnCarga.place(x=190,y=130,width=216,height=30)
+        btnCarga.place(x=160,y=5,width=150,height=20)
         btnCarga["command"] = self.btnCarga
 
         btnGenerar=tk.Button(root)
@@ -40,7 +44,7 @@ class Menu:
         btnGenerar["fg"] = "#000000"
         btnGenerar["justify"] = "center"
         btnGenerar["text"] = "Generar archivo XML"
-        btnGenerar.place(x=190,y=170,width=217,height=30)
+        btnGenerar.place(x=315,y=5,width=150,height=20)
         btnGenerar["command"] = self.btnGenerar
 
         btnGestionD=tk.Button(root)
@@ -50,7 +54,7 @@ class Menu:
         btnGestionD["fg"] = "#000000"
         btnGestionD["justify"] = "center"
         btnGestionD["text"] = "Gestión de drones"
-        btnGestionD.place(x=190,y=210,width=215,height=30)
+        btnGestionD.place(x=470,y=5,width=150,height=20)
         btnGestionD["command"] = self.btnGestionD
 
         btnGestionS=tk.Button(root)
@@ -60,7 +64,7 @@ class Menu:
         btnGestionS["fg"] = "#000000"
         btnGestionS["justify"] = "center"
         btnGestionS["text"] = "Gestion de Sistemas de Drones"
-        btnGestionS.place(x=190,y=250,width=215,height=30)
+        btnGestionS.place(x=625,y=5,width=180,height=20)
         btnGestionS["command"] = self.btnGestionS
 
         btnMensajes=tk.Button(root)
@@ -70,7 +74,7 @@ class Menu:
         btnMensajes["fg"] = "#000000"
         btnMensajes["justify"] = "center"
         btnMensajes["text"] = "Gestión de Mensajes"
-        btnMensajes.place(x=190,y=290,width=215,height=30)
+        btnMensajes.place(x=5,y=30,width=150,height=20)
         btnMensajes["command"] = self.btnMensajes
 
         btnAyuda=tk.Button(root)
@@ -80,31 +84,56 @@ class Menu:
         btnAyuda["fg"] = "#000000"
         btnAyuda["justify"] = "center"
         btnAyuda["text"] = "Ayuda"
-        btnAyuda.place(x=190,y=330,width=214,height=30)
+        btnAyuda.place(x=160,y=30,width=150,height=20)
         btnAyuda["command"] = self.btnAyuda
 
-        lblMenu=tk.Label(root)
-        ft = tkFont.Font(family='Times',size=23)
-        lblMenu["font"] = ft
-        lblMenu["fg"] = "#333333"
-        lblMenu["justify"] = "center"
-        lblMenu["text"] = "Menu Principal"
-        lblMenu.place(x=200,y=30,width=199,height=35)
 
     def btnInicializar(self):
         print("Apartado de incicializacion")
 
 
     def btnCarga(self):
+        global lecture
         print("Carga de Archivos")
+        ubicacion = input("ingrese la ubicacion: ")
+        lectura = LecturaXML(ubicacion)
+        lectura.getDrones()
+        lecture = lectura.getListaDrones()
+        print(lecture)
 
 
     def btnGenerar(self):
         print("Apartado de generar")
 
 
+    def recorrido(self,dron):
+        dron.recorrer()
+        dr = dron.getInicio()
+        print(dr.getDato().getNombre())
+        while dr.getSiguiente():
+            dr = dr.getSiguiente()
+            print(dr.getDato().getNombre())
+
     def btnGestionD(self):
+        global lecture
+        dron = lecture
         print("Apartado Gestion Drones")
+        ventanita = tk.Toplevel()
+        ventanita.geometry("400x325")
+        ventanita.title("Gestion Drones")
+        lblListadoDron = tk.Label(ventanita, text="Listado de Drones Actuales")
+        lblListadoDron.grid(row=0, column=0)
+        txt = tk.Text(ventanita,width=20,height=15)
+        txt.grid(row=1,column=0,padx=10)
+        lblNDron = tk.Label(ventanita,text="Ingrese el Nombre del dron a Agregar\n (El Nombre debe ser diferente)")
+        lblNDron.grid(row=0, column=2,pady=10)
+        btnMostrar = tk.Button(ventanita,text="Mostrar",command = lambda : txt.insert(tkinter.END,self.recorrido(dron)))
+        btnMostrar.grid(row = 2,column=0)
+
+
+
+
+
 
 
     def btnGestionS(self):
