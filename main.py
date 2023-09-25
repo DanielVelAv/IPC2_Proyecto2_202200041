@@ -1,6 +1,7 @@
 import tkinter
 import tkinter as tk
 import tkinter.font as tkFont
+from tkinter import filedialog
 from LecturaXML import *
 
 lecture = None
@@ -95,11 +96,13 @@ class Menu:
     def btnCarga(self):
         global lecture
         print("Carga de Archivos")
-        ubicacion = input("ingrese la ubicacion: ")
-        lectura = LecturaXML(ubicacion)
-        lectura.getDrones()
-        lecture = lectura.getListaDrones()
-        print(lecture)
+        name = tkinter.filedialog.askopenfilename()
+        if name:
+            lectura = LecturaXML(name)
+            lectura.getDrones()
+            lecture = lectura.getListaDrones()
+            print(lecture)
+
 
 
     def btnGenerar(self):
@@ -107,12 +110,20 @@ class Menu:
 
 
     def recorrido(self,dron):
-        dron.recorrer()
         dr = dron.getInicio()
-        print(dr.getDato().getNombre())
+        txt = dr.getDato().getNombre() + "\n"
         while dr.getSiguiente():
             dr = dr.getSiguiente()
-            print(dr.getDato().getNombre())
+            txt += dr.getDato().getNombre() + "\n"
+        return txt
+
+    def dronAgr(self,nombreD):
+        global lecture
+        dron = lecture
+        nombre = nombreD
+        nombreDron = Dron(nombre)
+        dron.agregar(nombreDron)
+
 
     def btnGestionD(self):
         global lecture
@@ -125,10 +136,18 @@ class Menu:
         lblListadoDron.grid(row=0, column=0)
         txt = tk.Text(ventanita,width=20,height=15)
         txt.grid(row=1,column=0,padx=10)
+        btnMostrar = tk.Button(ventanita, text="Mostrar",
+        command=lambda: [txt.delete("1.0", tk.END), txt.insert("1.0", self.recorrido(dron))])
+        btnMostrar.grid(row=2, column=0)
+
         lblNDron = tk.Label(ventanita,text="Ingrese el Nombre del dron a Agregar\n (El Nombre debe ser diferente)")
         lblNDron.grid(row=0, column=2,pady=10)
-        btnMostrar = tk.Button(ventanita,text="Mostrar",command = lambda : txt.insert(tkinter.END,self.recorrido(dron)))
-        btnMostrar.grid(row = 2,column=0)
+        txtDirec = tkinter.Entry(ventanita)
+        txtDirec.grid(row=1, column=2, pady=1)
+        btnAceptar = tkinter.Button(ventanita, text="Aceptar", command = lambda : self.dronAgr(txtDirec.get()))
+        btnAceptar.grid(row=2, column=2, pady=1)
+
+
 
 
 
