@@ -1,7 +1,7 @@
 from Nodo import Nodo
 
 class ListaDoble():
-
+    id = 0
     def __init__(self):
         self.nodoInicio = None
         self.nodoFinal = None
@@ -17,12 +17,16 @@ class ListaDoble():
         return self.nodoInicio == None
 
     def agregar(self,dato):
-        if self.nodoInicio is None:
-            self.nodoInicio = Nodo(dato=dato)
+        nuevo = Nodo(self.id, dato)
+        self.id += 1
+        if self.estaVacia():
+            self.nodoInicio = nuevo
+            self.nodoFinal = nuevo
         else:
-            actual = Nodo(dato=dato,siguiente = self.nodoInicio)
-            self.nodoInicio.anterior = actual
-            self.nodoInicio = actual
+            nuevo.setAnterior(self.nodoFinal)
+            self.nodoFinal.setSiguiente(nuevo)
+            self.nodoFinal = nuevo
+        self.size += 1
 
     def recorrer(self):
         if self.nodoInicio is None:

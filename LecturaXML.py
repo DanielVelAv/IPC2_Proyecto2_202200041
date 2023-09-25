@@ -3,7 +3,6 @@ from ListaDoble import ListaDoble
 from Dron import *
 
 class LecturaXML():
-
     def __init__(self,path):
         self.raiz = ET.parse(path).getroot()
         self.ListasD = ListaDoble()
@@ -13,6 +12,7 @@ class LecturaXML():
     def getDrones(self):
 
         Drones = self.ListasD
+        SistemasDrones = self.ListaSistemasDrones
 
         for i in self.raiz.findall('listaDrones'):
             drones = ListaDoble()
@@ -23,10 +23,12 @@ class LecturaXML():
         Drones.recorrer()
 
         for j in self.raiz.findall('listaSistemasDrones'):
-            print(j)
             for k in j.findall('sistemaDrones'):
                 nombre = k.get('nombre')
-                print(k," ",nombre)
+                mH = ""
+                cD = ""
+                valor = ListaDoble()
+                print("Sistema Drones ",nombre)
                 for l in k.findall('alturaMaxima'):
                     mH = l.text
                     print("AlturaMaxima"," ",mH)
@@ -57,6 +59,8 @@ class LecturaXML():
                         drn = klmn.text
                         print("dron: ",dron," instruccion: ",drn)
 
-archiv = LecturaXML('C:/Users/dolyaD/Documents/GitHub/IPC2_Proyecto2_202200041/entradaV3.xml')
-archiv.getDrones()
+    def getListaDrones(self):
+        return self.ListasD
+'''archiv = LecturaXML('C:/Users/dolyaD/Documents/GitHub/IPC2_Proyecto2_202200041/entradaV3.xml')
+archiv.getDrones()'''
 
