@@ -54,3 +54,11 @@ class ListaDoble():
         if not no_encontrado:
             print("nombre",actual.dato.nombre)
 
+    def buscarID(self, dato):
+        tmp = self.nodoInicio
+        while tmp:
+            if tmp.getId() == dato:
+                return tmp.getDato()
+            tmp = tmp.getSiguiente()
+        return None
+

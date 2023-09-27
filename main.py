@@ -5,6 +5,7 @@ from tkinter import filedialog
 from LecturaXML import *
 
 lecture = None
+Sistema = None
 
 class Menu:
     def __init__(self, root):
@@ -95,12 +96,14 @@ class Menu:
 
     def btnCarga(self):
         global lecture
+        global Sistema
         print("Carga de Archivos")
         name = tkinter.filedialog.askopenfilename()
         if name:
             lectura = LecturaXML(name)
             lectura.getDrones()
             lecture = lectura.getListaDrones()
+            Sistema = lectura.getListaSistemaDrones()
             print(lecture)
 
 
@@ -156,7 +159,24 @@ class Menu:
 
 
     def btnGestionS(self):
+        global Sistema
         print("Apartado Gestion Sistema de drones")
+
+        sistema = Sistema
+
+        for i in range(sistema.getSize()):
+            actualS = sistema.buscarID(i)
+            print("Nombre Sistema: ",actualS.getNombre(),"Altura Max: ",actualS.getAlturaMax()," Cantidad Drones: ",actualS.getCantidadD())
+            contenido = actualS.getContenido()
+            print("cantidad de Valores en Contenido: ", contenido.getSize())
+            for j in range(contenido.getSize()):
+                cnt = contenido.buscarID(j)
+                print(cnt.getNombreDron())
+                alturas = cnt.getListaAlturas()
+                for k in range(alturas.getSize()):
+                    actualAltura = alturas.buscarID(k)
+                    print("Valor: ",actualAltura.getNValor(),"Altura: ",actualAltura.getDatoAltura())
+
 
 
     def btnMensajes(self):
