@@ -4,6 +4,8 @@ from Dron import *
 from ValorListaSistemas import *
 from dronSistema import *
 from SistemaD import *
+from Msg import InstruccionMensaje
+from Msg import Mensaje
 
 class LecturaXML():
     def __init__(self,path):
@@ -17,6 +19,7 @@ class LecturaXML():
 
         Drones = self.ListasD
         SistemasDrones = self.ListaSistemasDrones
+        Message  = self.ListaMensajes
 
         for i in self.raiz.findall('listaDrones'):
             drones = Drones
@@ -60,18 +63,27 @@ class LecturaXML():
                 print(nombre,mH,cD,SistemasDrones, "Cantidad de SistemaDrones", SistemasDrones.getSize())
 
         for k in self.raiz.findall('listaMensajes'):
-                for kl in k.findall('Mensaje'):
-                    msg = kl.get('nombre')
-                    print("Mensaje: ",msg)
-                    for klm in kl.findall('sistemaDrones'):
-                        sistDrones = klm.text
-                        print("Sistema Drones:", sistDrones)
-                    for klm in kl.findall('instrucciones'):
-                        for klmn in klm.findall('instruccion'):
-                            dron = klmn.get('dron')
-                            drn = klmn.text
-                            print("dron: ",dron," instruccion: ",drn)
 
+
+            for kl in k.findall('Mensaje'):
+                msg = kl.get('nombre')
+                nSD = ""
+                print("Mensaje: ",msg)
+                for klm in kl.findall('sistemaDrones'):
+                    sistDrones = klm.text
+                    nSD = sistDrones
+                    print("Sistema Drones:", sistDrones)
+                instr = ListaDoble()
+                for klm in kl.findall('instrucciones'):
+                    for klmn in klm.findall('instruccion'):
+                        dron = klmn.get('dron')
+                        drn = klmn.text
+                        print("dron: ",dron," instruccion: ",drn)
+                        nuevaInst = InstruccionMensaje.InstruccionMensaje(dron,drn)
+                        instr.agregar(nuevaInst)
+                mensaje = Mensaje.Mensaje(msg,nSD,instr)
+                Message.agregar(mensaje)
+                #aqui deber ir la ultima lista
         #aqui se guardar la lista con las 3 sublistas :3
 
 
@@ -80,6 +92,9 @@ class LecturaXML():
 
     def getListaSistemaDrones(self):
         return self.ListaSistemasDrones
+
+    def getListaMensajes(self):
+        return self.ListaMensajes
 
 '''archiv = LecturaXML('C:/Users/dolyaD/Documents/GitHub/IPC2_Proyecto2_202200041/entradaV3.xml')
 archiv.getDrones()'''

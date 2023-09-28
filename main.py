@@ -1,11 +1,14 @@
 import tkinter
+from tkinter import ttk
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import filedialog
 from LecturaXML import *
+import graphviz
 
 lecture = None
 Sistema = None
+Mesag = None
 
 class Menu:
     def __init__(self, root):
@@ -69,16 +72,6 @@ class Menu:
         btnGestionS.place(x=625,y=5,width=180,height=20)
         btnGestionS["command"] = self.btnGestionS
 
-        btnMensajes=tk.Button(root)
-        btnMensajes["bg"] = "#f0f0f0"
-        ft = tkFont.Font(family='Times',size=10)
-        btnMensajes["font"] = ft
-        btnMensajes["fg"] = "#000000"
-        btnMensajes["justify"] = "center"
-        btnMensajes["text"] = "Gestión de Mensajes"
-        btnMensajes.place(x=5,y=30,width=150,height=20)
-        btnMensajes["command"] = self.btnMensajes
-
         btnAyuda=tk.Button(root)
         btnAyuda["bg"] = "#f0f0f0"
         ft = tkFont.Font(family='Times',size=10)
@@ -89,6 +82,47 @@ class Menu:
         btnAyuda.place(x=160,y=30,width=150,height=20)
         btnAyuda["command"] = self.btnAyuda
 
+        opciones = ["Listado de Mensajes","Ver Instrucciones para Mandar Mensaje"]
+        self.cmbMensaje = ttk.Combobox(root,values=opciones)
+        self.cmbMensaje.bind("<<ComboboxSelected>>",self.seleccionado)
+        self.cmbMensaje.place(x=10,y=30)
+
+
+    def seleccionado(self,event):
+        seleccion = self.cmbMensaje.get()
+        if seleccion == "Listado de Mensajes":
+            print("Ha seleccionado la opcion de Listado de Mensajes")
+            self.VentanaMsjListado()
+
+    def VentanaMsjListado(self):
+        ventanitaM = tkinter.Toplevel()
+        ventanitaM.geometry("400x300")
+        ventanitaM.title("Listado De Mensajes")
+        lblIngreso = tkinter.Label(ventanitaM, text="Listado de Mensajes")
+        lblIngreso.grid(row=0, column=10)
+        self.txt = tk.Text(ventanitaM, width=40, height=15)
+        self.txt.grid(row=1, column=5, padx=30,columnspan=60)
+        btnMostrar = tkinter.Button(ventanitaM, text="Mostrar Listado", command = lambda : [self.txt.delete("1.0", tk.END),self.MostrarLstMensaje()])
+        btnMostrar.grid(row=2, column=10, pady=10)
+
+    def MostrarLstMensaje(self):
+        lstMsg = Mesag
+
+        nnm = ''
+        nl = ''
+        for i in range(lstMsg.getSize()):
+            nm = lstMsg.buscarID(i)
+            print(nm.getNombreM())
+            print(nm.getNombreListaSistemas())
+            self.txt.insert(tkinter.END,"Nombre del Mensaje: "+str(nm.getNombreM())+"\n")
+            inst = nm.getInstrucciones()
+            for j in range (inst.getSize()):
+                actual_ins = inst.buscarID(j)
+                actual_ins.getDron()
+                actual_ins.getInstruccionMsg()
+                self.txt.insert(tkinter.END,str(actual_ins.getDron())+" "+str(actual_ins.getInstruccionMsg())+"\n")
+
+
 
     def btnInicializar(self):
         print("Apartado de incicializacion")
@@ -97,6 +131,7 @@ class Menu:
     def btnCarga(self):
         global lecture
         global Sistema
+        global Mesag
         print("Carga de Archivos")
         name = tkinter.filedialog.askopenfilename()
         if name:
@@ -104,6 +139,7 @@ class Menu:
             lectura.getDrones()
             lecture = lectura.getListaDrones()
             Sistema = lectura.getListaSistemaDrones()
+            Mesag = lectura.getListaMensajes()
             print(lecture)
 
 
@@ -176,6 +212,40 @@ class Menu:
                 for k in range(alturas.getSize()):
                     actualAltura = alturas.buscarID(k)
                     print("Valor: ",actualAltura.getNValor(),"Altura: ",actualAltura.getDatoAltura())
+        self.graficarSistemas(sistema)
+        self.crearG(sistema)
+
+
+    def graficarSistemas(self,ListaSistemaDrone):
+        sistema = ListaSistemaDrone
+        g = graphviz.Digraph('G',filename="graficaSistemas.gv")
+        g.format = 'png'
+
+        for i in range(sistema.getSize()):
+            actualS = sistema.buscarID(i)
+            print("Nombre Sistema: ", actualS.getNombre(), "Altura Max: ", actualS.getAlturaMax(), " Cantidad Drones: ",actualS.getCantidadD())
+            contenido = actualS.getContenido()
+            g.node(str(actualS.getNombre()))
+            g.node(str(actualS.getAlturaMax()))
+            g.node(str(actualS.getCantidadD()))
+            g.edge(str(actualS.getNombre()),str(actualS.getAlturaMax()))
+            g.edge(str(actualS.getNombre()),str(actualS.getCantidadD()))
+            print("cantidad de Valores en Contenido: ", contenido.getSize())
+            for j in range(contenido.getSize()):
+                cnt = contenido.buscarID(j)
+                print(cnt.getNombreDron())
+                alturas = cnt.getListaAlturas()
+                g.node(str(cnt.getNombreDron()))
+                g.edge(str(actualS.getNombre()),str(cnt.getNombreDron()))
+                for k in range(alturas.getSize()):
+                    actualAltura = alturas.buscarID(k)
+                    print("Valor: ", actualAltura.getNValor(), "Altura: ", actualAltura.getDatoAltura())
+
+        g.render()
+
+    def crearG(self,listaSistema):
+
+        sistema = listaSistema
 
 
 
