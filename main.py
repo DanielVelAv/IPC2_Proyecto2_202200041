@@ -82,10 +82,20 @@ class Menu:
         btnAyuda.place(x=160,y=30,width=150,height=20)
         btnAyuda["command"] = self.btnAyuda
 
+        btnGestionDrones = tk.Button(root)
+        btnGestionDrones["bg"] = "#f0f0f0"
+        ft = tkFont.Font(family='Times', size=10)
+        btnGestionDrones["font"] = ft
+        btnGestionDrones["fg"] = "#000000"
+        btnGestionDrones["justify"] = "center"
+        btnGestionDrones["text"] = "Gestion de Drones"
+        btnGestionDrones.place(x=6, y=30, width=150, height=20)
+        btnGestionDrones["command"] = self.VentanaMsjListado
+
         opciones = ["Listado de Mensajes","Ver Instrucciones para Mandar Mensaje"]
         self.cmbMensaje = ttk.Combobox(root,values=opciones)
         self.cmbMensaje.bind("<<ComboboxSelected>>",self.seleccionado)
-        self.cmbMensaje.place(x=10,y=30)
+        self.cmbMensaje.place(x=4,y=60)
 
 
     def seleccionado(self,event):
@@ -96,31 +106,63 @@ class Menu:
 
     def VentanaMsjListado(self):
         ventanitaM = tkinter.Toplevel()
-        ventanitaM.geometry("400x300")
-        ventanitaM.title("Listado De Mensajes")
+        ventanitaM.geometry("800x300")
+        ventanitaM.title("Gestion Drones")
         lblIngreso = tkinter.Label(ventanitaM, text="Listado de Mensajes")
         lblIngreso.grid(row=0, column=10)
         self.txt = tk.Text(ventanitaM, width=40, height=15)
         self.txt.grid(row=1, column=5, padx=30,columnspan=60)
         btnMostrar = tkinter.Button(ventanitaM, text="Mostrar Listado", command = lambda : [self.txt.delete("1.0", tk.END),self.MostrarLstMensaje()])
-        btnMostrar.grid(row=2, column=10, pady=10)
+        btnMostrar.place(x=140,y=270)
+        lblSelecMensaje = tkinter.Label(ventanitaM,text="Ingrese el nombre del Mensaje")
+        lblSelecMensaje.place(x=500,y=5)
+        MensajePorMostrar = tkinter.Entry(ventanitaM,width=45)
+        MensajePorMostrar.place(x=450,y=30)
+        btnMostraSistemaMensaje = tkinter.Button(ventanitaM,text="Mostrar Mensaje", command = lambda : [self.BusquedaMensaje(MensajePorMostrar.get())])
+        btnMostraSistemaMensaje.place(x= 545,y =60)
+        self.salidaInstrucciones = tkinter.Text(ventanitaM,height=10,width=50)
+        self.salidaInstrucciones.place(x=375,y=100)
+
+    def verificacionSistema(self,TextoEnEntrada):
+        lstMensajes = Mesag
+        msgADesencriptar = TextoEnEntrada
+        print(msgADesencriptar)
+
+        for i in range(lstMensajes.getSize()):
+            tempLst = lstMensajes.buscarID(i)
+            name = tempLst.getNombreM()
+            NombreDelSistema = tempLst.getNombreListaSistemas()
+            ListaIntrucciones = tempLst.getInstrucciones()
+            if name == msgADesencriptar:
+                print("Se encontro el mensaje: ",name)
+                return NombreDelSistema,ListaIntrucciones
+
+    def BusquedaMensaje(self,TextoEntrada):
+
+        lstMensaje = Mesag
+        msgABuscar = TextoEntrada
+
+        nombre,Lista = self.verificacionSistema(msgABuscar)
+        self.salidaInstrucciones.insert(tkinter.END,"--------Sistema de Drones a utilizar: "+nombre+"--------\n")
+        print (nombre,Lista)
+
+
+
 
     def MostrarLstMensaje(self):
         lstMsg = Mesag
 
-        nnm = ''
-        nl = ''
         for i in range(lstMsg.getSize()):
             nm = lstMsg.buscarID(i)
             print(nm.getNombreM())
             print(nm.getNombreListaSistemas())
-            self.txt.insert(tkinter.END,"Nombre del Mensaje: "+str(nm.getNombreM())+"\n")
+            self.txt.insert(tkinter.END,"--------Nombre del Mensaje: "+str(nm.getNombreM())+"--------\n")
             inst = nm.getInstrucciones()
             for j in range (inst.getSize()):
                 actual_ins = inst.buscarID(j)
                 actual_ins.getDron()
                 actual_ins.getInstruccionMsg()
-                self.txt.insert(tkinter.END,str(actual_ins.getDron())+" "+str(actual_ins.getInstruccionMsg())+"\n")
+                self.txt.insert(tkinter.END,str("INSTRUCCIÓN: "+actual_ins.getDron())+" "+str(actual_ins.getInstruccionMsg())+"\n")
 
 
 

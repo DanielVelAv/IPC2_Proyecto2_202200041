@@ -56,7 +56,6 @@ class LecturaXML():
                                     valorA.agregar(nuevoV)
                     dronS = DronSistema(Dn,valorA) #contiene el nombre y la lista de alturas
                     ListaContenido.agregar(dronS)
-                    print("prueba Dron",Dn,"contiene nombre y lista de alturas 'ListaContenido guarda'",ListaContenido.getSize())
                 #aqui deberia de estar la lista para guardar_todo el sistemaDron
                 sistemaDrones = SistemaD(nombre,mH,cD,ListaContenido) #nombre sistema, altura max, cantidad drones
                 SistemasDrones.agregar(sistemaDrones)
