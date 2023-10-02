@@ -1,8 +1,15 @@
 class Nodo():
-    def __init__(self,dato = None,siguiente = None,anterior = None):
+    def __init__(self,id,dato):
+        self.id = id
         self.dato = dato
-        self.siguiente = siguiente
-        self.anterior = anterior
+        self.siguiente = None
+        self.anterior = None
+
+    def getId(self):
+        return self.id
+
+    def setId(self,id):
+        self.id = id
 
     def getDato(self):
         return self.dato

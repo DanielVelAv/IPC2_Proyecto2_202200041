@@ -1,7 +1,7 @@
 from Nodo import Nodo
 
 class ListaDoble():
-
+    id = 0
     def __init__(self):
         self.nodoInicio = None
         self.nodoFinal = None
@@ -17,21 +17,25 @@ class ListaDoble():
         return self.nodoInicio == None
 
     def agregar(self,dato):
-        if self.nodoInicio is None:
-            self.nodoInicio = Nodo(dato=dato)
+        nuevo = Nodo(self.id, dato)
+        self.id += 1
+        if self.estaVacia():
+            self.nodoInicio = nuevo
+            self.nodoFinal = nuevo
         else:
-            actual = Nodo(dato=dato,siguiente = self.nodoInicio)
-            self.nodoInicio.anterior = actual
-            self.nodoInicio = actual
+            nuevo.setAnterior(self.nodoFinal)
+            self.nodoFinal.setSiguiente(nuevo)
+            self.nodoFinal = nuevo
+        self.size += 1
 
     def recorrer(self):
         if self.nodoInicio is None:
             return
         actual = self.nodoInicio
-        print("Nombre Dron",actual.dato.nombre)
+        print("Nombre_Dron",actual.dato.nombre)
         while actual.siguiente:
             actual = actual.siguiente
-            print("Nombre Dron",actual.dato.nombre)
+            print("Nombre_Dron",actual.dato.nombre)
 
     def buscar(self, dato):
         actual = self.nodoInicio
@@ -50,3 +54,27 @@ class ListaDoble():
         if not no_encontrado:
             print("nombre",actual.dato.nombre)
 
+    def buscarID(self, dato):
+        tmp = self.nodoInicio
+        while tmp:
+            if tmp.getId() == dato:
+                return tmp.getDato()
+            tmp = tmp.getSiguiente()
+        return None
+
+    def eliminar(self, indice):
+        if indice < 0 or indice >= self.size:
+            raise IndexError("Índice fuera de rango")
+
+        if indice == 0:
+            # Eliminar el primer elemento
+            self.nodoInicio = self.nodoInicio.getSiguiente()
+            if self.nodoInicio is not None:
+                self.nodoInicio.setAnterior(None)
+            else:
+                # Si la lista quedó vacía, actualizar nodoFinal
+                self.nodoFinal = None
+        else:
+            pass
+
+        self.size -= 1
