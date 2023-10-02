@@ -62,3 +62,19 @@ class ListaDoble():
             tmp = tmp.getSiguiente()
         return None
 
+    def eliminar(self, indice):
+        if indice < 0 or indice >= self.size:
+            raise IndexError("Índice fuera de rango")
+
+        if indice == 0:
+            # Eliminar el primer elemento
+            self.nodoInicio = self.nodoInicio.getSiguiente()
+            if self.nodoInicio is not None:
+                self.nodoInicio.setAnterior(None)
+            else:
+                # Si la lista quedó vacía, actualizar nodoFinal
+                self.nodoFinal = None
+        else:
+            pass
+
+        self.size -= 1

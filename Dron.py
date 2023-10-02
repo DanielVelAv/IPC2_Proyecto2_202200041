@@ -1,12 +1,12 @@
 
 class Dron:
 
-    def __init__(self,nombre, Altura = 1):
+    def __init__(self,nombre, Altura = 0):
         self.nombre = nombre
         self.Altura = Altura
 
     def getNombre(self):
         return self.nombre
 
-    def getAlturas(self):
+    def getAltura(self):
         return self.Altura

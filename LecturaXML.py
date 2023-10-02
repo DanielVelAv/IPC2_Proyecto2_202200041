@@ -27,26 +27,21 @@ class LecturaXML():
                 nuevoDron = Dron(k.text)
                 drones.agregar(nuevoDron)
 
-            drones.recorrer()
 
         for j in self.raiz.findall('listaSistemasDrones'): #para ingresar a los datos
             for k in j.findall('sistemaDrones'):    #por cada uno de los SistemasDrones guardara
                 nombre = k.get('nombre') #obtiene el nombre del sistema
                 mH = "" #variables que contendran Altura Maxima
                 cD = "" #cantidad Drones
-                print("Sistema Drones ",nombre)
                 for l in k.findall('alturaMaxima'):
                     mH = l.text
-                    print("AlturaMaxima"," ",mH)
                 for m in k.findall('cantidadDrones'):
                     cD = m.text
-                    print("CantidadDrones"," ",cD)
                 ListaContenido = ListaDoble()
                 for o in k.findall('contenido'):
                     Dn = "" #aqui hay diferentes valores para el sistema (parecido a dato de senales)
                     for op in o.findall('dron'): #El nombre del dron dentro de sistema drones
                         Dn = op.text
-                        print("Dron: ",Dn)
                     valorA = ListaDoble()
                     for opq in o.findall('alturas'):
                         for idk in range(1,int(mH) + 1 ):
@@ -59,7 +54,6 @@ class LecturaXML():
                 #aqui deberia de estar la lista para guardar_todo el sistemaDron
                 sistemaDrones = SistemaD(nombre,mH,cD,ListaContenido) #nombre sistema, altura max, cantidad drones
                 SistemasDrones.agregar(sistemaDrones)
-                print(nombre,mH,cD,SistemasDrones, "Cantidad de SistemaDrones", SistemasDrones.getSize())
 
         for k in self.raiz.findall('listaMensajes'):
 
@@ -67,17 +61,16 @@ class LecturaXML():
             for kl in k.findall('Mensaje'):
                 msg = kl.get('nombre')
                 nSD = ""
-                print("Mensaje: ",msg)
                 for klm in kl.findall('sistemaDrones'):
                     sistDrones = klm.text
                     nSD = sistDrones
-                    print("Sistema Drones:", sistDrones)
+
                 instr = ListaDoble()
                 for klm in kl.findall('instrucciones'):
                     for klmn in klm.findall('instruccion'):
                         dron = klmn.get('dron')
                         drn = klmn.text
-                        print("dron: ",dron," instruccion: ",drn)
+
                         nuevaInst = InstruccionMensaje.InstruccionMensaje(dron,drn)
                         instr.agregar(nuevaInst)
                 mensaje = Mensaje.Mensaje(msg,nSD,instr)

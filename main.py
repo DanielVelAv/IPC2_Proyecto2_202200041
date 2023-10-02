@@ -92,10 +92,7 @@ class Menu:
         btnGestionDrones.place(x=6, y=30, width=150, height=20)
         btnGestionDrones["command"] = self.VentanaMsjListado
 
-        opciones = ["Listado de Mensajes","Ver Instrucciones para Mandar Mensaje"]
-        self.cmbMensaje = ttk.Combobox(root,values=opciones)
-        self.cmbMensaje.bind("<<ComboboxSelected>>",self.seleccionado)
-        self.cmbMensaje.place(x=4,y=60)
+
 
 
     def seleccionado(self,event):
@@ -134,19 +131,112 @@ class Menu:
             NombreDelSistema = tempLst.getNombreListaSistemas()
             ListaIntrucciones = tempLst.getInstrucciones()
             if name == msgADesencriptar:
-                print("Se encontro el mensaje: ",name)
                 return NombreDelSistema,ListaIntrucciones
 
-    def BusquedaMensaje(self,TextoEntrada):
 
+    #funcion princpal Para Desencriptado de Mensaje
+    def BusquedaMensaje(self,TextoEntrada):
+        lstDrones = lecture
         lstMensaje = Mesag
         msgABuscar = TextoEntrada
+        contador = 0
 
-        nombre,Lista = self.verificacionSistema(msgABuscar)
-        self.salidaInstrucciones.insert(tkinter.END,"--------Sistema de Drones a utilizar: "+nombre+"--------\n")
-        print (nombre,Lista)
+        #obtiene el nombre del Sistema a usar y La lista completa con las instrucciones
+        nombreSistemaDrone,ListaInstrucciones = self.verificacionSistema(msgABuscar)
+        # se inserta a el txt el sistema
+        self.salidaInstrucciones.insert(tkinter.END,"--------Sistema de Drones a utilizar: "+nombreSistemaDrone+"--------\n")
+        # a partir del nombre obtenido anteriormente se obtiene la lista con todos los datos
+        ListaSistemaCompleto = self.RegresarDatosSistema(nombreSistemaDrone)
+        #aqui se imprime el nombre del sistema, altura, y cantidad de drones dentro de
+        print(ListaSistemaCompleto.getNombre(),ListaSistemaCompleto.getAlturaMax(),ListaSistemaCompleto.getCantidadD(),"todo se ve bien jefe")
+        tmp = ListaSistemaCompleto.getContenido()
+
+        #primer intento de obtener el mensaje, problemas con el orden y los comandos
+
+        '''while not ListaInstrucciones.estaVacia():
+            inst = ListaInstrucciones.getInicio()
+            dron = ListaInstrucciones.getInicio().getDato().getDron()
+            print("institucion ",inst.getDato().getInstruccionMsg(),"drone", dron)
+            ListaInstrucciones.eliminar(0)'''
 
 
+        #este ciclo es para cada uno de los sistemas
+        for i in range(int(ListaSistemaCompleto.getCantidadD())): # aqui ejecuta el sistema
+            temp = tmp.buscarID(i)
+            print(temp.getNombreDron())
+            #ciclo para las intrucciones
+            altura = temp.getListaAlturas().getInicio()
+            while not ListaInstrucciones.estaVacia():
+                tmpLst = ListaInstrucciones.getInicio()
+                if temp.getNombreDron() == tmpLst.getDato().getDron():
+                    print("se encontro coinidicencia en el dron: ", temp.getNombreDron())
+
+                    if altura.getDato().getNValor() == tmpLst.getDato().getInstruccionMsg():
+                        print("encontrado")
+                        ListaInstrucciones.eliminar(0)
+                    if altura.getDato().getNValor() < tmpLst.getDato().getInstruccionMsg():
+                        print("Es menor")
+                        altura = altura.getSiguiente()
+                    if altura.getDato().getNValor() > tmpLst.getDato().getInstruccionMsg():
+                        print("Es mayor")
+                else:
+                    print(tmpLst.getDato().getInstruccionMsg()tmpLst.getDato().getInstruccionMsg())
+                    break
+
+            #debo quitar el ciclo o de lo contraio se reiniciara
+            '''for p in range(ListaInstrucciones.getSize()):
+                tmpLstI = ListaInstrucciones.buscarID(p)
+                #print(tmpLstI.getDron())
+                lstA = temp.getListaAlturas()
+                lstAA = lstA.getInicio()
+                #si se encuentra el dron en las instrucciones
+                if temp.getNombreDron() == tmpLstI.getDron():
+                    # se verifica si el dron esta en el mensaje
+                    print(f"El {temp.getNombreDron()} se encuentra en la lista de instrucciones, su instruccion es ir a altura {tmpLstI.getInstruccionMsg()}")
+
+                    #se empieza a recorrer la lista de la lista sistema
+                    #el uso de ciclos puede causar problemas, se deben recorrer nodos
+                    #para aplicar las condicionales
+                    while tmpLstI:
+                        print(lstAA.getDato().getNValor(),lstAA.getDato().getDatoAltura())
+                        if int(tmpLstI.getInstruccionMsg()) > int(lstAA.getDato().getNValor()):
+                            print("La altura esta mas arriba")
+                            lstAA = lstAA.getSiguiente()
+                        elif tmpLstI.getInstruccionMsg() < lstAA.getDato().getNValor():
+                            print("La altura esta mas abajo")
+                            lstAA =  lstAA.getAnterior()
+                        elif tmpLstI.getInstruccionMsg() == lstAA.getDato().getNValor():
+                            print("Esta en la altura deseada")
+                            break'''
+            '''print(lst)'''
+            '''for l in range(lstA.getSize()):
+                tmpAlt = lstA.buscarID(l)
+                #se imprime la altura y el dato en esa altura
+                print(tmpAlt.getNValor(),tmpAlt.getDatoAltura())
+                #condicion en caso que se encuentre en esa altura
+                if tmpLstI.getInstruccionMsg() == tmpAlt.getNValor():
+                    print("Se encuentra en la posicion Adecuada, altura ",tmpAlt.getNValor())
+                    mensaje += tmpAlt.getDatoAltura()
+                    break'''
+        print("El mensaje obtenido es: ")
+
+        #necesito recorrer par saber si en las instrucciones se encuentra el primer dron y las instrucciones que ejecutara
+
+
+
+
+    def DesencriptadoMensaje(self,NombreDron,IntruccionACumplir):
+        pass
+
+    def RegresarDatosSistema(self,nombreSistemaBuscado):
+        sistemaPorBuscar = nombreSistemaBuscado
+        ListaSistemas = Sistema
+
+        for i in range(ListaSistemas.getSize()):
+            tempLst = ListaSistemas.buscarID(i)
+            tempLst.getNombre()
+            if sistemaPorBuscar == tempLst.getNombre():
+                return tempLst
 
 
     def MostrarLstMensaje(self):
@@ -154,8 +244,6 @@ class Menu:
 
         for i in range(lstMsg.getSize()):
             nm = lstMsg.buscarID(i)
-            print(nm.getNombreM())
-            print(nm.getNombreListaSistemas())
             self.txt.insert(tkinter.END,"--------Nombre del Mensaje: "+str(nm.getNombreM())+"--------\n")
             inst = nm.getInstrucciones()
             for j in range (inst.getSize()):
@@ -182,7 +270,7 @@ class Menu:
             lecture = lectura.getListaDrones()
             Sistema = lectura.getListaSistemaDrones()
             Mesag = lectura.getListaMensajes()
-            print(lecture)
+
 
 
 
@@ -289,6 +377,18 @@ class Menu:
 
         sistema = listaSistema
 
+        g = graphviz.Digraph()
+        g.format = "jpg"
+        g.node('tabla', shape='plaintext', label='''<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+        <TR>
+            <TD>HI</TD> EQUIVALENTE A NOMBRE SISTEMA
+        </TR>
+        
+        </TABLE>>''')
+
+        g.render()
+
+
 
 
     def btnMensajes(self):
@@ -296,7 +396,14 @@ class Menu:
 
 
     def btnAyuda(self):
-        print("Apartado ayuda")
+        ventanaAyuda = tk.Toplevel()
+        ventanaAyuda.geometry("400x325")
+        ventanaAyuda.title("Gestion Drones")
+        lblListadoDron = tk.Label(ventanaAyuda, text="Nombre: Daniel Eduardo Velásquez Avila\n Curso: Introducción a la Programación y Computación \n Seccion: N \nCarnet: 202200041 \n CUI: 3596985220101")
+        lblListadoDron.place(x=50, y=50)
+        txtDoc = tk.Text(ventanaAyuda,height=2,width=40)
+        txtDoc.place(x=40,y=150)
+        txtDoc.insert(tkinter.END,"https://github.com/DanielVelAv/IPC2_Proyecto2_202200041.git")
 
 if __name__ == "__main__":
     root = tk.Tk()
