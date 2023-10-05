@@ -1,0 +1,8 @@
+digraph {
+	tabla [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR>
+                <TD>Prueba</TD> 
+                <TD>Prueba</TD>
+                <TD>Prueba</TD>
+            </TR>
+        </TABLE>> shape=plaintext]
+}
