@@ -50,7 +50,7 @@ class Menu:
         btnGenerar["justify"] = "center"
         btnGenerar["text"] = "Generar archivo XML"
         btnGenerar.place(x=315,y=5,width=150,height=20)
-        btnGenerar["command"] = self.btnGenerar
+        btnGenerar["command"] = self.salida
 
         btnGestionD=tk.Button(root)
         btnGestionD["bg"] = "#f0f0f0"
@@ -88,7 +88,7 @@ class Menu:
         btnGestionDrones["font"] = ft
         btnGestionDrones["fg"] = "#000000"
         btnGestionDrones["justify"] = "center"
-        btnGestionDrones["text"] = "Gestion de Drones"
+        btnGestionDrones["text"] = "Gestion de Mensajes"
         btnGestionDrones.place(x=6, y=30, width=150, height=20)
         btnGestionDrones["command"] = self.VentanaMsjListado
 
@@ -150,8 +150,49 @@ class Menu:
         #aqui se imprime el nombre del sistema, altura, y cantidad de drones dentro de
         print(ListaSistemaCompleto.getNombre(),ListaSistemaCompleto.getAlturaMax(),ListaSistemaCompleto.getCantidadD(),"todo se ve bien jefe")
         tmp = ListaSistemaCompleto.getContenido()
-
+        mensaje = ""
         #primer intento de obtener el mensaje, problemas con el orden y los comandos
+        while not ListaInstrucciones.estaVacia():
+            tmpLst = ListaInstrucciones.getInicio()
+            segCont = 0
+            #por cada for unicamente un dron hara una iteracion
+            for i in range(0,int(ListaSistemaCompleto.getCantidadD())):
+                temp = tmp.buscarID(i)
+                conta = i
+                if contador == 0:
+                    alturaAct = temp.setAlturaActual(temp.getListaAlturas().getInicio())
+                    alturaA = temp.getAlturaActual()
+                    altura = temp.getListaAlturas().getInicio()
+                    print(temp.getNombreDron(),"Subir")
+                else:
+                    print(temp.getNombreDron())
+                    if temp.getNombreDron() == tmpLst.getDato().getDron():
+                        if temp.getAlturaActual().getDato().getNValor() < tmpLst.getDato().getInstruccionMsg():
+                            temp.setAlturaActual(temp.getAlturaActual().getSiguiente())
+                            print("----",temp.getNombreDron(), " subir----")
+                            self.salidaInstrucciones.insert(tkinter.END, f"{temp.getNombreDron()} subir\n")
+                            instruccion = TiempoLuz(temp.getNombreDron(),"Subir",contador)
+                        elif temp.getAlturaActual().getDato().getNValor() > tmpLst.getDato().getInstruccionMsg():
+                            temp.setAlturaActual(temp.getAlturaActual().getAnterior())
+                            print(temp.getNombreDron(), " bajar")
+                            self.salidaInstrucciones.insert(tkinter.END, f"{temp.getNombreDron()} Bajar\n")
+                        elif temp.getAlturaActual().getDato().getNValor() == tmpLst.getDato().getInstruccionMsg():
+                            mensaje += temp.getListaAlturas().buscarID(int(tmpLst.getDato().getInstruccionMsg())-1).getDatoAltura()
+                            self.salidaInstrucciones.insert(tkinter.END, f"{temp.getNombreDron()} Emitiendo Luz\n")
+                            print(temp.getNombreDron(),"Emitir Luz")
+                            ListaInstrucciones.eliminar(0)
+            contador += 1
+            print("El contador va: ",contador)
+        print("El mensaje es: ",mensaje)
+        self.salidaInstrucciones.insert(tkinter.END,"El Mensaje es: " + mensaje + "\n")
+        self.salidaInstrucciones.insert(tkinter.END, "El tiempo es: " + str(contador) + "\n")
+
+        '''while not ListaInstrucciones.estaVacia():
+            if contador == 1:
+                for j in range(int(ListaSistemaCompleto.getCantidadD())):
+                    pass
+            else:'''
+
 
         '''while not ListaInstrucciones.estaVacia():
             inst = ListaInstrucciones.getInicio()
@@ -161,18 +202,19 @@ class Menu:
 
 
         #este ciclo es para cada uno de los sistemas
-        for i in range(int(ListaSistemaCompleto.getCantidadD())): # aqui ejecuta el sistema
+        '''for i in range(int(ListaSistemaCompleto.getCantidadD())): # aqui ejecuta el sistema
             temp = tmp.buscarID(i)
             print(temp.getNombreDron())
             #ciclo para las intrucciones
             altura = temp.getListaAlturas().getInicio()
+
             while not ListaInstrucciones.estaVacia():
                 tmpLst = ListaInstrucciones.getInicio()
                 if temp.getNombreDron() == tmpLst.getDato().getDron():
                     print("se encontro coinidicencia en el dron: ", temp.getNombreDron())
 
                     if altura.getDato().getNValor() == tmpLst.getDato().getInstruccionMsg():
-                        print("encontrado")
+                        print("encontrado y guardado", altura.getDato().getDatoAltura())
                         ListaInstrucciones.eliminar(0)
                     if altura.getDato().getNValor() < tmpLst.getDato().getInstruccionMsg():
                         print("Es menor")
@@ -180,53 +222,93 @@ class Menu:
                     if altura.getDato().getNValor() > tmpLst.getDato().getInstruccionMsg():
                         print("Es mayor")
                 else:
-                    print(tmpLst.getDato().getInstruccionMsg()tmpLst.getDato().getInstruccionMsg())
-                    break
+                    print("debe ir a: ",tmpLst.getDato().getInstruccionMsg(),tmpLst.getDato().getDron(),altura.getDato().getNValor(),altura.getDato().getDatoAltura())'''
+
+
+
+        '''still,indice = self.comprobacion(temp.getNombreDron(),ListaInstrucciones)
+        if still == True:
+            pass
+        elif still == False:
+            break'''
+        '''for l in range(ListaInstrucciones.getSize()):
+            u = tmpTT.getDato().getDron()
+            print(u)
+            if tmpTT.getDato().getDron() == temp.getNombreDron():
+            tmpTT = tmpTT.getSiguiente()'''
+
 
             #debo quitar el ciclo o de lo contraio se reiniciara
-            '''for p in range(ListaInstrucciones.getSize()):
-                tmpLstI = ListaInstrucciones.buscarID(p)
-                #print(tmpLstI.getDron())
-                lstA = temp.getListaAlturas()
-                lstAA = lstA.getInicio()
-                #si se encuentra el dron en las instrucciones
-                if temp.getNombreDron() == tmpLstI.getDron():
-                    # se verifica si el dron esta en el mensaje
-                    print(f"El {temp.getNombreDron()} se encuentra en la lista de instrucciones, su instruccion es ir a altura {tmpLstI.getInstruccionMsg()}")
+        '''for p in range(ListaInstrucciones.getSize()):
+            tmpLstI = ListaInstrucciones.buscarID(p)
+            #print(tmpLstI.getDron())
+            lstA = temp.getListaAlturas()
+            lstAA = lstA.getInicio()
+            #si se encuentra el dron en las instrucciones
+            if temp.getNombreDron() == tmpLstI.getDron():
+                # se verifica si el dron esta en el mensaje
+                print(f"El {temp.getNombreDron()} se encuentra en la lista de instrucciones, su instruccion es ir a altura {tmpLstI.getInstruccionMsg()}")
 
-                    #se empieza a recorrer la lista de la lista sistema
-                    #el uso de ciclos puede causar problemas, se deben recorrer nodos
-                    #para aplicar las condicionales
-                    while tmpLstI:
-                        print(lstAA.getDato().getNValor(),lstAA.getDato().getDatoAltura())
-                        if int(tmpLstI.getInstruccionMsg()) > int(lstAA.getDato().getNValor()):
-                            print("La altura esta mas arriba")
-                            lstAA = lstAA.getSiguiente()
-                        elif tmpLstI.getInstruccionMsg() < lstAA.getDato().getNValor():
-                            print("La altura esta mas abajo")
-                            lstAA =  lstAA.getAnterior()
-                        elif tmpLstI.getInstruccionMsg() == lstAA.getDato().getNValor():
-                            print("Esta en la altura deseada")
-                            break'''
-            '''print(lst)'''
-            '''for l in range(lstA.getSize()):
-                tmpAlt = lstA.buscarID(l)
-                #se imprime la altura y el dato en esa altura
-                print(tmpAlt.getNValor(),tmpAlt.getDatoAltura())
-                #condicion en caso que se encuentre en esa altura
-                if tmpLstI.getInstruccionMsg() == tmpAlt.getNValor():
-                    print("Se encuentra en la posicion Adecuada, altura ",tmpAlt.getNValor())
-                    mensaje += tmpAlt.getDatoAltura()
-                    break'''
-        print("El mensaje obtenido es: ")
+                #se empieza a recorrer la lista de la lista sistema
+                #el uso de ciclos puede causar problemas, se deben recorrer nodos
+                #para aplicar las condicionales
+                while tmpLstI:
+                    print(lstAA.getDato().getNValor(),lstAA.getDato().getDatoAltura())
+                    if int(tmpLstI.getInstruccionMsg()) > int(lstAA.getDato().getNValor()):
+                        print("La altura esta mas arriba")
+                        lstAA = lstAA.getSiguiente()
+                    elif tmpLstI.getInstruccionMsg() < lstAA.getDato().getNValor():
+                        print("La altura esta mas abajo")
+                        lstAA =  lstAA.getAnterior()
+                    elif tmpLstI.getInstruccionMsg() == lstAA.getDato().getNValor():
+                        print("Esta en la altura deseada")
+                        break'''
+        '''print(lst)'''
+        '''for l in range(lstA.getSize()):
+            tmpAlt = lstA.buscarID(l)
+            #se imprime la altura y el dato en esa altura
+            print(tmpAlt.getNValor(),tmpAlt.getDatoAltura())
+            #condicion en caso que se encuentre en esa altura
+            if tmpLstI.getInstruccionMsg() == tmpAlt.getNValor():
+                print("Se encuentra en la posicion Adecuada, altura ",tmpAlt.getNValor())
+                mensaje += tmpAlt.getDatoAltura()
+                break'''
+    print("El mensaje obtenido es: ")
 
         #necesito recorrer par saber si en las instrucciones se encuentra el primer dron y las instrucciones que ejecutara
 
+    def comprobarLista(self,nombreDron,ListaInstrucciones):
 
+        DronEnInstruccion = False
 
+        for i in range(ListaInstrucciones.getSize()):
+            tmp = ListaInstrucciones.buscarID(i)
+            if tmp is not None:
 
-    def DesencriptadoMensaje(self,NombreDron,IntruccionACumplir):
-        pass
+                tmpA = tmp.getDron()
+                if nombreDron == tmpA:
+                    DronEnInstruccion = True
+                else:
+                    DronEnInstruccion = False
+        return DronEnInstruccion
+
+    def comprobacion(self,nombreDron,ListaInstrucciones):
+        StillDron = False
+        index = 0
+        lstI = ListaInstrucciones.getInicio()
+        for i in range(ListaInstrucciones.getSize()):
+            lstI.getDato().getDron()
+            print(lstI.getDato().getDron())
+            if lstI.getDato().getDron() == nombreDron:
+                index = i
+                print(index)
+                StillDron = True
+                return StillDron, index
+            else:
+                StillDron = False
+            lstI = lstI.getSiguiente()
+        return StillDron
+
 
     def RegresarDatosSistema(self,nombreSistemaBuscado):
         sistemaPorBuscar = nombreSistemaBuscado
@@ -344,6 +426,7 @@ class Menu:
                     print("Valor: ",actualAltura.getNValor(),"Altura: ",actualAltura.getDatoAltura())
         self.graficarSistemas(sistema)
         self.crearG(sistema)
+        self.graficacion(sistema)
 
 
     def graficarSistemas(self,ListaSistemaDrone):
@@ -370,7 +453,15 @@ class Menu:
                 for k in range(alturas.getSize()):
                     actualAltura = alturas.buscarID(k)
                     print("Valor: ", actualAltura.getNValor(), "Altura: ", actualAltura.getDatoAltura())
+        g.render()
 
+    def graficacion(self,listaSistemas):
+        sistema = listaSistemas
+        g = graphviz.Digraph('G',filename="SistemasDrones")
+        g.format = "jpg"
+        for i in range(sistema.getSize()):
+            actualS = sistema.buscarID(i)
+            g.node(str(actualS.getNombre()))
         g.render()
 
     def crearG(self,listaSistema):
@@ -379,17 +470,46 @@ class Menu:
 
         g = graphviz.Digraph()
         g.format = "jpg"
-        g.node('tabla', shape='plaintext', label='''<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-        <TR>
-            <TD>HI</TD> EQUIVALENTE A NOMBRE SISTEMA
-        </TR>
-        
+
+
+        g.node('tabla', shape='plaintext', label='''<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">'''
+            '''<TR>
+                <TD>Prueba</TD> 
+                <TD>Prueba</TD>
+                <TD>Prueba</TD>
+            </TR>
         </TABLE>>''')
+
+
 
         g.render()
 
 
+    def salida(self):
+        lstMensaje = Mesag
 
+        salida = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        salida += '<respuesta>\n'
+        salida += '\t<listaMensajes>\n'
+        for i in range(lstMensaje.getSize()):
+            tmpMsg = lstMensaje.buscarID(i)
+            salida += f'\t\t<mensaje nombre="{tmpMsg.getNombreM()}">\n'
+            salida += f'\t\t\t<sistemaDrones>{tmpMsg.getNombreListaSistemas()}</sistemaDrones>\n'
+            salida += f'\t\t\t\t<tiempoOptimo>{None}</tiempoOptimo>\n'
+            salida += f'\t\t\t\t<mensajeRecibido>{None}</mensajeRecibido>\n'
+            salida += '\t\t\t\t<instrucciones>\n'
+            salida += f'\t\t\t\t\t<tiempo valor = {None}>\n'
+
+            salida += '\t\t\t\t\t</tiempo>\n'
+            salida += '\t\t\t\t</instrucciones>\n'
+            salida += '\t\t</mensaje>\n'
+        salida += '\t</listaMensajes>\n'
+        salida += '</respuesta>'
+
+        name = tkinter.filedialog.asksaveasfilename(defaultextension=".xml")
+
+        with open(name, "w") as archivo:
+            archivo.write(salida)
 
     def btnMensajes(self):
         print("Apartado de Gestion de Mensajes")
